@@ -20,7 +20,7 @@
     <section id="setup-panel" class="panel auth-panel hidden">
       <span class="eyebrow">One-time setup</span>
       <h1>Connect the admin</h1>
-      <p>Set your Supabase URL and anon key in <code>config.js</code>, then reload this page.</p>
+      <p>Set your Supabase URL and anon key in <code>admin/config.js</code>, then reload this page.</p>
     </section>
 
     <section id="login-panel" class="panel auth-panel hidden">
@@ -51,9 +51,31 @@
       </section>
       <aside class="panel"><span class="eyebrow">Published items</span><h2>Current updates</h2><div id="post-list" class="post-list"></div></aside>
     </main>
+    <section id="media-manager" class="panel hidden media-manager">
+      <span class="eyebrow">Archive library</span>
+      <h2>Manage every public media item</h2>
+      <p class="manager-intro">Edit titles and captions, replace files, reorder items, or hide anything from the public archive.</p>
+      <form id="media-form">
+        <input id="media-id" type="hidden">
+        <div class="media-form-grid">
+          <div><label for="media-title">Title</label><input id="media-title" required></div>
+          <div><label for="media-group">Group</label><input id="media-group" placeholder="hub, cad, journey..." required></div>
+          <div><label for="media-number">Number</label><input id="media-number" type="number" min="1" required></div>
+          <div><label for="media-file">Replace / add file</label><input id="media-file" type="file" accept="image/*,video/*"></div>
+        </div>
+        <label for="media-caption">Caption</label><textarea id="media-caption" required></textarea>
+        <label class="check-row"><input id="media-visible" type="checkbox" checked> Show this media on the public site</label>
+        <div class="button-row"><button class="primary" type="submit">Save media</button><button class="secondary" id="clear-media" type="button">Clear</button></div>
+        <p id="media-message" class="message"></p>
+      </form>
+      <div id="media-list" class="post-list"></div>
+    </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=2"></script>
-  <script src="admin.js?v=2"></script>
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+  <style>
+    .media-manager{grid-column:1/-1;margin-top:22px}.manager-intro{color:var(--muted);margin:-4px 0 18px}.media-form-grid{display:grid;grid-template-columns:1.4fr .8fr .5fr 1fr;gap:14px}.media-manager .post{display:grid;grid-template-columns:1fr auto;gap:8px 16px}.media-manager .post p{grid-column:1/-1}.media-manager .post-actions{grid-column:2;grid-row:1 / span 2;margin:0;align-self:center}@media(max-width:780px){.media-form-grid{grid-template-columns:1fr}.media-manager .post{display:block}.media-manager .post-actions{margin-top:12px}}
+  </style>
 </body>
 </html>
