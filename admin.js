@@ -25,6 +25,9 @@
   const show = (element) => element.classList.remove('hidden');
   const hide = (element) => element.classList.add('hidden');
   const message = (element, text) => { element.textContent = text; };
+  const explainError = (error) => error?.message === 'Bucket not found'
+    ? 'Storage bucket "portfolio-images" is missing. Run the bucket setup SQL in Supabase, then try again.'
+    : error?.message || 'Something went wrong. Please try again.';
 
   if (!config.supabaseUrl || !config.supabaseAnonKey) {
     show(setupPanel);
@@ -52,7 +55,7 @@
         </article>
       `).join('') : '<article class="post"><h3>No posts yet</h3><p>Publish your first update from this private workspace.</p></article>';
     } catch (error) {
-      message(formMessage, error.message);
+      message(formMessage, explainError(error));
     }
   };
 
@@ -121,7 +124,7 @@
       await renderPosts();
     } catch (error) {
       message(statusMessage, '');
-      message(formMessage, error.message);
+      message(formMessage, explainError(error));
     }
   });
 
