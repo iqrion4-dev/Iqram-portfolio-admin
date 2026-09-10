@@ -67,7 +67,7 @@
       mediaList.innerHTML = media.length ? media.map((item) => `
         <article class="post">
           <div><span class="meta">${escapeHtml(item.group_id)} · ${escapeHtml(item.media_type)} · ${item.visible ? 'Visible' : 'Hidden'}</span><h3>${escapeHtml(item.number)} — ${escapeHtml(item.title)}</h3></div>
-          <div class="post-actions"><button class="secondary" data-media-edit="${item.id}" type="button">Edit</button><button class="danger" data-media-hide="${item.id}" type="button">${item.visible ? 'Hide' : 'Show'}</button></div>
+          <div class="post-actions"><button class="secondary" data-media-edit="${item.id}" type="button">Edit</button><button class="danger" data-media-hide="${item.id}" type="button">${item.visible ? 'Hide' : 'Show'}</button><button class="danger" data-media-delete="${item.id}" type="button">Delete</button></div>
           <p>${escapeHtml(item.caption)}</p>
         </article>
       `).join('') : '<article class="post"><h3>No managed media yet</h3><p>Run the media library seed SQL to import the existing archive.</p></article>';
@@ -206,6 +206,7 @@
   mediaList.addEventListener('click', async (event) => {
     const editId = event.target.dataset.mediaEdit;
     const hideId = event.target.dataset.mediaHide;
+    const deleteId = event.target.dataset.mediaDelete;
     if (editId) {
       const media = await getMedia();
       const item = media.find((entry) => entry.id === editId);
@@ -224,6 +225,11 @@
       const item = media.find((entry) => entry.id === hideId);
       if (!item) return;
       const { error } = await supabase.from('media_assets').update({ visible: !item.visible }).eq('id', hideId);
+      if (error) message(mediaMessage, explainError(error));
+      await renderMedia();
+    }
+    if (deleteId && window.confirm('Delete this media item from the public archive?')) {
+      const { error } = await supabase.from('media_assets').delete().eq('id', deleteId);
       if (error) message(mediaMessage, explainError(error));
       await renderMedia();
     }
